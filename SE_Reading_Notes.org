@@ -1,0 +1,201 @@
+#+TITLE: The Rise of AI Teammates in Software Engineering (SE) 3.0: How Autonomous Coding Agents Are Reshaping Software Engineering
+
+* 研究背景与动机
+
+** SE 3.0时代的到来
+- SE 1.0：传统手工编码时代，无AI辅助
+- SE 1.5：预测性编码（代码补全、智能提示）
+- SE 2.0：AI辅助软件工程（LLM生成代码）
+- SE 3.0：自主AI队友时代，能独立完成端到端开发任务
+
+** 研究动机
+- 现有研究多为理论推测，缺乏真实世界中AI队友行为的实证数据
+- 需要回答关键问题：
+  - 自主编码代理如何影响开发者生产力？
+  - AI生成的代码是否可被合并？
+  - 人类团队如何适应自主编码代理的存在？
+  - 当前基准测试是否能反映AI在真实环境中的表现？
+
+* 主要贡献
+
+** AIDev数据集
+- 规模：456,535个由自主编码代理创建的PR
+- 覆盖范围：61,453个GitHub仓库，47,303名开发者
+- 包含的AI代理：OpenAI Codex、Devin、GitHub Copilot、Cursor、Claude Code
+- 数据结构：丰富的元数据，包括PR时间线、代码审查、提交详情、关联问题等
+
+** 实证研究发现
+- 系统分析了AI代理在真实项目中的表现、审查动态和代码质量
+- 揭示了基准测试表现与现实效果之间的显著差距
+
+** 未来研究方向
+- 提出了9个具体的研究方向，指导SE与AI交叉领域的未来探索
+
+* 关键研究发现
+
+** 生产力与接受率
+- AI代理已成为不可或缺的协作者，55%+的PR涉及功能开发或修复
+- AI-PR接受率显著低于人类（如Codex 64% vs 人类76.8%）
+- 文档任务是AI的强项，接受率超过人类基准
+
+** 效率与审查动态
+- GitHub Copilot完成速度极快（50%的PR在13分钟内完成）
+- OpenAI Codex PR审查速度快10倍（0.3小时 vs 人类3.9小时）
+- 人类仍是主要审查者，但机器人审查比例在AI-PR中显著上升
+
+** 代码质量与归属
+- AI更倾向于简单、模板化代码，较少引入复杂度变化
+- 作者归属不明确，部分AI代理不标注贡献者，影响可追溯性
+- AI代理表现出语言偏好（如Codex偏向Python，Copilot偏向C#）
+
+* 未来研究方向
+
+** 基准测试与评估
+- 开发基于真实工作流的集成导向基准测试
+- 分析被拒PR以识别AI失败模式
+
+** 系统优化
+- 延迟感知的AI代理编排
+- 设计智能PR分流系统管理审查工作量
+
+** 质量与协作
+- 评估AI代码的长期质量
+- 研究人-AI协作中的任务规划阶段
+- 研究编程语言特性对AI效果的影响
+
+** 审查流程
+- 理解并降低审查AI代码的人力成本
+- 改进AI代码审查的质量与流程
+
+* 未来展望：SE 3.0方法论
+
+** 软件仓库作为AI训练环境
+- 将GitHub仓库视为强化学习环境
+- 使用真实信号（PR合并、测试通过）作为奖励
+
+** 动态基准测试
+- 取代静态基准测试（如SWE-bench）
+- 建立实时排行榜，反映真实项目集成效果
+
+** 新工程方法论
+- 需要新的协作框架、审查机制和治理模型
+- 重新定义敏捷、DevOps等实践以适应人-AI混合团队
+
+* 结论
+
+- AIDev提供了首个大规模实证基础，证明自主编码代理时代已经到来
+- AI代理能显著加速代码贡献，但在接受率和代码复杂性方面与人类存在差距
+- 数据集将支持下一代软件工程研究，推动SE 3.0从理论走向实践
+
+* 可以提出的问题：
+1. 混淆变量： 研究发现AI-PR的接受率更低。我们如何确定这是因为代码质量差，而不是因为人类审查员对AI生成的代码抱有固有的不信任或更高的审查标准？这一点可能会影响因果推断
+Regarding potential confounding variables: The empirical findings indicate a systematically lower acceptance rate for Agentic-PRs. 
+How can we ascertain that this is primarily due to inferior code quality, as opposed to inherent distrust or a heightened scrutiny standard applied by human reviewers to AI-generated code? 
+This ambiguity presents a challenge to establishing a clear causal interpretation of the results.
+
+#+TITLE: Is Refactoring Always a Good Egg? Exploring the Interconnection Between Bugs and Refactorings
+本文通过实证研究深入探讨了代码重构与软件缺陷之间的复杂关系。
+
+* 研究背景与动机
+
+** 传统认知
+- Bug修复：纠正性修改，旨在消除程序缺陷
+- 代码重构：行为保持的代码改进，旨在提升内部质量而不改变功能
+- 传统观点认为这两种活动应该独立进行，且重构不应引入缺陷
+
+** 研究动机
+- 实际开发中，开发者对重构存在顾虑，担心引入缺陷
+- 现有研究对重构与缺陷关系的结论不一致
+- 需要基于大规模实证数据探究重构与缺陷的真实关系
+
+* 研究问题
+
+** RQ1：Bug修复提交中是否常见混杂重构更改？
+- 探究开发者在修复缺陷时是否同时进行重构
+
+** RQ2：重构操作是否出现在引入缺陷的代码修改中？
+- 分析重构是否真的可能引入新的缺陷
+
+** RQ3：在引入缺陷的提交中，哪些重构类型最为常见？
+- 识别高风险的重构类型，为开发者提供预警
+
+* 研究方法
+
+** 数据来源
+- SmartSHARK 2.2 数据集
+- 涵盖96个Java项目
+- 包含提交标签、重构操作、缺陷引入信息
+
+** 分析工具
+- 重构检测：RMiner工具（精度98%，召回率87%）
+- 缺陷引入识别：基于SZZ算法
+- 提交级别关联分析
+
+** 分析方法
+- 通过提交ID关联重构与缺陷记录
+- 统计共现频率
+- 识别高风险重构类型
+
+* 主要研究发现
+
+** RQ1：Bug修复提交中的重构混杂情况
+- 41/96个项目存在重构与bug修复混杂的提交
+- 平均21%的bug修复提交包含重构操作
+- 最高比例：Calcite项目（41%）
+- 但仅有10%的重构操作与bug修复混杂
+
+** RQ2：重构在缺陷引入提交中的出现情况
+- 平均54%的缺陷引入提交包含重构操作
+- 比例范围：20%（commons-validator）到71%（Calcite）
+- 重构与缺陷引入存在显著共现关系
+
+** RQ3：高风险重构类型识别
+
+*** 高频出现类型（按次数）
+- Change Variable Type（652次）
+- Extract Method（454次）
+- Change Return Type（338次）
+
+*** 高风险类型（按比例R1%）
+- Extract Subclass（33%出现在缺陷引入提交中）
+- Replace Attribute（29%）
+- Move and Rename Attribute（28%）
+
+* 结论与启示
+
+** 主要结论
+- 重构与缺陷活动在实践中并非独立
+- 重构并非总是"安全"的行为保持操作
+- 特定重构类型具有较高风险
+
+** 实践启示
+- 重构时应加强验证与测试，特别是高风险类型
+- 避免在修复缺陷时混杂不相关的重构
+- 提高对重构潜在风险的认识
+
+** 研究局限性
+- 基于提交级别的共现分析，未建立因果关系
+- 依赖检测工具的准确性（RMiner、SZZ）
+- 数据集局限于Java项目
+
+* 未来工作
+
+** 定性研究
+- 深入分析重构与缺陷之间的因果关系
+- 探究重构引入缺陷的根本机制
+
+** 扩展研究
+- 扩展到更多编程语言和项目类型
+- 开发重构风险评估工具
+- 建立重构最佳实践指南
+
+* 总结
+
+本研究通过实证分析挑战了"重构总是安全"的传统观念，揭示了重构与缺陷之间的复杂关联，为开发者理解和管理重构风险提供了重要依据。
+
+* 可以提出的问题：
+“最安全”的重构是什么？ 论文重点指出了高风险重构，但从表3看，像“移动类”这样的重构在缺陷引入提交中出现的比例较低（5%）。这是否意味着某些重构实际上是相对安全的？
+The paper prominently highlights high-risk refactoring types. 
+However, as seen in Table 3, refactorings like Move Class have a relatively low presence in bug-inducing commits (R1% of only 5%). 
+Does this imply that certain refactoring operations are, in fact, relatively safe? 
+What patterns or characteristics might these lower-risk refactorings share, and could this inform the development of safer refactoring practices?
