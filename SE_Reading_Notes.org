@@ -490,3 +490,334 @@ How was the prompt engineering process conducted to ensure fairness and optimal 
 Were prompts optimized for each model?
 针对不同任务（特别是像静态分析警告这样的复杂任务）的提示词，其结构和细节很可能不同。
 提示词工程的过程是如何进行的，以确保在所有任务和模型间的公平性和最佳性能？提示词是否为每个模型单独优化过？
+
+
+#+TITLE: GreenHub Farmer: Real-world data for Android Energy Mining
+#+AUTHOR: Hugo Matalonga, Bruno Cabral, Fernando Castor, Marco Couto, Rui Pereira, Simao Melo de Sousa, Joao Paulo Fernandes
+
+* 研究背景与动机
+** 问题现状
+- 90%的用户存在低电量焦虑（low battery anxiety）
+- 电池寿命是影响消费者满意度的最重要因素之一
+- 应用能耗过高是导致差评的主要原因
+
+** 研究挑战
+*** 开发者面临的问题
+- 缺乏系统化的能耗分析工具
+- 测试场景复杂，需要多设备多环境
+- Android生态系统的高度异构性
+
+*** 用户面临的问题
+- 缺乏技术背景和工具进行能耗分析
+- 无法进行跨设备比较
+- 难以制定有效的节能策略
+
+** 环境意义
+- 移动设备全球能耗已超过航空业
+- 节能对可持续发展具有重要意义
+
+* GreenHub平台架构
+
+** BatteryHub（数据采集端）
+*** 功能特性
+- Android应用，通过Google Play Store分发
+- 监听系统广播事件（电池状态变化等）
+- 采集设备状态样本
+
+*** 数据采集内容
+- 传感器状态
+- 内存使用情况
+- 电池温度/电压
+- 运行中的应用
+- 网络状态
+- 设备型号信息
+
+*** 隐私保护
+- 使用随机唯一标识符
+- 不收集个人身份信息（电话号码、位置、IMEI等）
+
+** Farmer（数据集与服务器）
+*** 技术架构
+- PHP + Laravel框架
+- MariaDB关系型数据库
+- 提供Web仪表盘界面
+
+*** 数据集规模（截至2018年12月）
+- 数据样本: 12.22 million+
+- 唯一设备: 36,933台
+- 品牌数量: 964个
+- 设备型号: 5,665种
+- Android版本: 36个
+- 覆盖国家: 160个
+
+*** 数据访问方式
+- MariaDB数据库dump文件
+- CSV格式数据集（5.2GB压缩包）
+- 在线Web仪表盘
+
+** API & Lumberjack（数据访问工具）
+*** RESTful API
+- 提供程序化数据访问接口
+- 支持数据模型扩展
+
+*** Lumberjack命令行工具
+- 支持灵活查询和过滤
+- 便于快速数据原型开发
+- 示例查询：获取Google品牌设备列表
+
+* 研究方向与应用场景
+
+** 面向开发者的研究方向
+1. 应用对电池消耗的影响分析
+2. 不同版本间的能耗演变
+3. 不同环境下的能耗变化（OS + 其他应用）
+4. 与同类应用的能耗对比
+5. 不同用户群体的能耗差异
+6. 系统电池管理策略对应用运行时间的影响
+
+** 面向用户的研究方向
+7. 与相似使用习惯用户的能耗对比
+8. 节能使用模式的识别与复制
+9. 传感器使用对电池的影响
+10. 应用组合运行的能耗优化
+11. 高能耗应用的识别
+12. 节能替代应用推荐
+13. 基于使用习惯的电池寿命预测
+
+** 已有研究案例
+- 不同OS版本和品牌的充放电行为分析
+- 手机游戏对电池消耗的影响量化（Fernando Castor团队）
+- 用户感知与实际能耗的相关性研究（Ivan Machado团队）
+
+* 数据价值与未来潜力
+
+** 数据特色
+- 真实世界使用数据
+- 大规模、多样化样本
+- 跨设备、跨国家覆盖
+- 持续增长的数据集
+
+** 技术潜力
+- 适合机器学习与AI分析
+- 支持能耗模式识别
+- 异常检测与个性化推荐
+
+** 社会价值
+- 帮助开发者优化应用性能
+- 指导用户改善使用习惯
+- 促进移动设备节能环保
+
+* 结论与贡献
+
+** 主要成果
+- 构建了大规模Android能耗数据集GreenHub Farmer
+- 开发了完整的数据采集、存储、访问平台
+- 数据公开可用，支持协作研究
+
+** 开放邀请
+- 邀请研究者和开发者使用数据集
+- 鼓励对GreenHub项目的贡献和协作
+- 持续完善数据分析和应用场景
+
+* 参考文献
+- 共30篇参考文献，涵盖能耗分析、移动开发、用户行为等领域
+- 包括学术论文、技术报告和行业分析
+
+* 可以提出的问题
+1. "tracks system event broadcasts such as changes to the battery's state, and when such an event occurs, it obtains a sample"----原文
+"电池状态变化"的具体定义：是指每1%的电量变化，还是包括充电状态、温度等任何变化？
+Could you precisely define what constitutes a change in the battery's state? Does it refer specifically to a change in the battery level (e.g., a 1% change), 
+or does it encompass any change in state, such as charging status, temperature, voltage, or other properties?
+
+2. 非事件触发的采样：是否在无状态变化时也有定期采样，以确保数据连续性？
+Is there also a mechanism for non-event-triggered sampling or periodic sampling when the battery's state is stable to ensure a continuous time series of data 
+and to capture the device's state even in the absence of state changes?
+
+
+#+TITLE: Language Models in Software Development Tasks: An Experimental Analysis of Energy and Accuracy
+#+AUTHOR: Negar Alizadeh, Boris Belchev, Nishant Saurabh, Patricia Kelbert, Fernando Castor
+
+* 研究背景与动机
+** 现状与挑战
+- 生成式AI编码助手（如ChatGPT、GitHub Copilot）在软件开发中广泛使用
+- 第三方API存在数据隐私、安全和订阅成本问题
+- 本地部署LLM成为趋势，但面临高能耗和硬件要求挑战
+
+** 研究空白
+- 现有研究主要关注模型训练阶段的能耗，忽略推理阶段的长期影响
+- 代码LLM评估多关注准确性，缺乏对能耗效率的综合分析
+- 缺乏针对软件开发任务的系统性能耗评估
+
+* 研究问题
+** RQ1: 任务类型对能耗的影响
+- 不同模型在不同软件开发任务中的能耗差异如何？
+
+** RQ2: 能耗与准确性的权衡关系
+- 模型在执行同一任务时，能耗效率与准确性是否存在权衡？
+
+** RQ3: 架构特征与能耗的关联
+- 模型架构特征是否与能耗有系统关联？
+
+** RQ4: 专用模型与通用模型的对比
+- 通用模型与代码专用模型在能耗与准确性上有何差异？
+
+* 实验设计
+** 模型选择
+*** 选择标准
+- 流行度（HuggingFace下载量）
+- 开发者信誉
+- 公开可用性
+- GGUF格式兼容性
+
+*** 模型范围
+- 18个模型家族
+- 3种精度格式：FP16、Q8、Q4
+- 参数规模：不超过200亿参数
+- 包含通用模型和代码专用模型
+
+** 硬件配置
+*** 笔记本环境（RTX 3070）
+- GPU: NVIDIA GeForce RTX3070 (8GB)
+- CPU: Intel Core i7-1158OH
+- 内存: 31GB
+- 用途: 小模型量化实验
+
+*** 服务器环境（A100）
+- GPU: NVIDIA A100 PCIe (80GB)
+- CPU: 2×AMD 7313
+- 内存: 1TB
+- 用途: 全精度与大模型实验
+
+** 任务与数据集
+*** 任务类型
+1. 代码生成（Code Generation）
+2. 缺陷修复（Bug Fixing）
+3. 文档字符串生成（Docstring Generation）
+4. 测试用例生成（Test Generation）
+
+*** 数据集
+- HumanEvalPack（Python子集）
+- 包含164个编程问题
+- 扩展版本，支持多任务评估
+
+** 测量方法
+*** 能耗测量工具
+- GPU能耗: pyNVML（10Hz采样）
+- CPU能耗: pyRAPL（1Hz采样）
+
+*** 评估指标
+- 准确性: pass@1
+- 能耗: 瓦时（Wh）
+- 效率: tokens/J
+- 测试覆盖率: 语句和分支覆盖率
+
+* 主要发现
+** RQ1: 任务类型对能耗的影响
+*** 能耗排序（从高到低）
+1. 测试生成（37.94Wh均值）
+2. 缺陷修复（29.69Wh均值）
+3. 文档生成（19.12Wh均值）
+4. 代码生成（13.46Wh均值）
+
+*** 关键观察
+- 同一模型在不同任务中能耗差异显著
+- llama2:7b-q8在测试生成中能耗是代码生成的7.2倍
+- 任务特性是影响能耗的主要因素
+
+** RQ2: 能耗与准确性的权衡
+*** Pareto前沿分析
+- 在某些任务中，小模型+量化可实现高精度+低能耗
+- 量化模型精度接近甚至优于全精度版本
+- 存在"收益递减"现象：大模型能耗增加但精度提升有限
+
+*** 典型案例
+- gemma:2b-fp16在文档生成中精度70.12%，能耗仅为大模型的1/4
+- phi3:3.8b在代码生成中表现优异，能耗仅为大模型的一半
+
+** RQ3: 架构特征与能耗关联
+*** 强相关因素
+- 参数数量与能耗强正相关（但与准确性无显著相关）
+- 效率指标（tokens/J）与模型大小强负相关
+- 量化位数与内存使用、能耗强负相关
+
+*** 架构特征影响
+- 注意力头数、前馈网络维度、Transformer块数均与能耗正相关
+- 4位量化模型在212/216个案例中能耗最低
+
+** RQ4: 专用vs通用模型表现
+*** 代码生成任务
+- 代码专用模型明显优于通用模型
+- 通用模型中只有llama3:8b进入Pareto前沿
+
+*** 其他任务
+- 文档生成和测试生成：通用模型表现竞争力强
+- 缺陷修复：所有模型表现均不理想
+
+* 关键洞见与实践建议
+** 模型选择策略
+- 大模型 ≠ 高精度：参数规模不是准确性的可靠指标
+- 任务导向选择：根据具体任务类型选择专用或通用模型
+- 量化优先：4位或8位量化版本在保持精度的同时显著降低能耗
+
+** 能耗优化建议
+- 关注CPU能耗：即使在GPU推理中，CPU能耗占比可达16%
+- 使用效率指标：tokens/J是跨任务比较的有效指标
+- 考虑架构特征：参数数量和量化级别是能耗的关键预测因子
+
+** 部署建议
+- 资源受限环境：优先选择小模型+量化版本
+- 高精度需求：中等规模代码专用模型通常是最优选择
+- 多任务场景：需要根据任务特性动态选择模型
+
+* 研究局限性
+** 内部有效性威胁
+- 提示模板一致性可能影响模型准确性
+- 部分模型输出解析困难，可能影响评估
+- Ollama API在某些情况下出现不完整响应
+
+** 外部有效性威胁
+- 数据集单一：仅使用HumanEvalPack（Python）
+- 缺乏真实世界复杂任务的代表性
+- 编程语言单一，可能影响结论泛化性
+
+** 比较局限性
+- 缺乏严格的通用模型与代码模型配对比较
+- 模型选择受硬件和格式兼容性限制
+
+* 结论与未来方向
+** 主要结论
+- 模型能耗在不同软件开发任务中差异显著
+- 能耗与准确性并非总是需要权衡，小模型+量化可达到良好平衡
+- 模型架构特征（特别是参数数量和量化级别）是能耗的强预测因子
+- 代码专用模型仅在代码生成任务中全面占优
+
+** 未来研究方向
+- 扩展多语言、复杂任务评估
+- 开发针对非代码生成任务（如缺陷修复）的专用模型
+- 探索更多硬件平台与推理框架的能效表现
+- 研究动态模型选择策略以适应不同任务需求
+
+* 实践意义
+** 对开发者的意义
+- 提供基于证据的模型选择指南
+- 揭示量化技术在实践部署中的价值
+- 强调任务特性在模型选择中的重要性
+
+** 对研究者的意义
+- 建立软件开发任务中LLM能耗评估的基准方法
+- 为绿色AI和可持续软件开发提供新视角
+- 开辟模型架构优化与任务特定调优的研究方向
+
+** 对工具开发者的意义
+- 需要开发支持动态模型选择的智能编码助手
+- 应提供能耗监控和优化建议功能
+- 考虑在不同硬件平台上的部署优化
+
+* 可以提出的问题
+"Popularity is measured by the number of downloads... Reputability of creator... While this criterion can be arguably subjective..."
+1. 下载量的具体阈值：未说明达到多少下载量才算"流行"
+Regarding model selection, you used download count as a measure of "popularity". 
+Could you clarify what the actual quantitative threshold was for this?
+
+2.Did the reported energy consumption include the model loading phase, or was it measured strictly during inference?
+能耗数据是否包含模型加载阶段，还是仅测量推理阶段？
