@@ -131,3 +131,201 @@ The key findings: small world structure in open-source software communication ne
 Future works can include such as studying causality /kɔːˈzæləti/ over time and multiple-projects validation... Thank you.
 
 
+# Paper: A Comprehensive Study of Autonomous Vehicle Bugs
+
+## 研究目标
+
+理解自动驾驶系统中软件缺陷的：
+
+根本原因
+
+表现症状
+
+影响的软件组件
+
+## 研究方法
+研究对象：两大开源自动驾驶系统——Baidu Apollo 和 Autoware
+
+数据来源：GitHub 上的 commit、issue、pull request
+
+时间范围：截至2019年7月15日
+
+分析样本：
+
+16,851 个 commits
+
+499 个被确认为 bug 的修复记录
+
+## 分类体系
+研究者构建了一个三层分类体系：
+
+1. 根本原因（13类）
+算法实现错误
+
+数值计算错误
+
+配置错误
+
+条件判断缺失
+
+内存错误
+
+并发错误
+
+文档错误
+
+等
+
+2. 症状（20类）
+系统崩溃
+
+编译/构建错误
+
+速度控制错误
+
+车道定位错误
+
+轨迹规划错误
+
+障碍物处理错误
+
+显示/GUI错误
+
+等
+
+3. 受影响的组件（18类）
+感知
+
+定位
+
+预测
+
+规划
+
+控制
+
+地图引擎
+
+CAN总线
+
+工具与中间件
+
+等
+
+## 主要发现（16条）
+算法实现错误是最常见的根本原因（27.86%）。
+
+配置错误也非常常见（27.25%），尤其在 Autoware 中。
+
+约 25.25% 的 bug 只需修改 ≤20 行代码，适合自动化修复。
+
+28.06% 的 bug 直接影响驾驶行为（如速度控制、轨迹规划）。
+
+规划组件是 bug 最多的模块（27.05%），远超其他组件。
+
+构建错误和崩溃是常见症状，影响多个组件。
+
+明确标记为安全/安全相关的 bug 极少（仅1%），但实际安全隐患可能被低估。
+
+许多 bug 症状跨越多个组件，尤其是速度控制错误影响50%的组件。
+
+## 研究意义与建议
+对开发者：应重点关注规划、感知、定位等核心组件的测试与代码审查。
+
+对研究者：
+
+需要开发能处理多行代码修复的自动化工具。
+
+应加强对配置管理和构建系统的支持。
+
+应扩展测试范围，不仅限于感知组件（如目标检测），还应包括规划、控制等。
+
+对未来：提出了构建自动驾驶系统测试用例生成、故障定位、自动修复等研究方向。
+
+## 总结
+这项研究首次系统性地揭示了自动驾驶系统中软件缺陷的特征，为后续的测试、调试、修复工具开发提供了重要基础，并指出了多个未来研究方向，尤其强调了对安全性和配置管理的重视。
+
+## Q：
+中文：
+“‘算法错误’的平均修复需要修改超过100行代码。这些修改的本质是什么？是彻底重写了核心逻辑，还是在多处分散地打补丁？能否提供一个具体案例来说明为何这类修复对现有自动化工具构成挑战？”
+
+English:
+“Fixes for 'Algorithm Errors' require changing 100+ lines on average. What is the nature of these changes—are they core logic rewrites or scattered patches? Can you provide a concrete case to illustrate why such fixes challenge current automated repair tools?”
+
+中文：
+“为什么本研究没有分析Bug的‘触发条件’？一个错误是在常规驾驶中常见，还是需要极端边缘案例才能触发？了解这一点对于评估其真实世界中的风险至关重要。”
+
+English:
+“Why did the study not investigate bug 'triggering conditions'? Is a bug triggered during common driving scenarios or only by rare edge cases? Understanding this is crucial for assessing its real-world risk.”
+
+
+# Paper: Striking Gold in Software Repositories? An Econometric Study of Cryptocurrencies on GitHub
+
+本文对加密货币的市值与其在GitHub上的开源软件开发活动之间的关系进行了深入的实证研究。
+
+## 研究核心问题
+
+论文旨在探究一个直观的假设：一个加密货币的软件质量越高、开发越活跃，是否就越有价值？ 具体化为两个研究问题：
+
+RQ1: 开发活跃度、受欢迎度和质量保证措施能否解释加密货币市值的差异？
+
+RQ2: 这些软件指标与市值之间是否存在动态的因果关系？
+
+## 研究方法与数据
+
+数据来源： 追踪了241个开源加密货币项目在近一年内（347天）的日度数据。
+
+软件指标： 从GitHub API收集，包括：
+
+受欢迎度： Stars, Forks, Watchers
+
+开发活跃度： Commits, Contributors, Lines of Code Changed
+
+质量保证： 是否使用了CI（持续集成）和Badges（徽章）
+
+金融指标： 从CoinMarketCap获取每日市值。
+
+分析方法： 采用了计量经济学方法，包括线性回归和格兰杰因果检验，以探究变量间的静态关联和动态因果关系。
+
+## 核心发现
+1. 关于RQ1：静态关联
+
+受欢迎度是关键： 在长期平均数据上，Stars数量与市值显示出显著的正相关关系。项目越受欢迎，平均市值越高。
+
+开发活跃度不显著： Commits、代码行数变更、贡献者数量等开发活跃度指标，在控制了受欢迎度等因素后，并不能提供额外的解释力。
+
+质量保证措施不显著： 虽然使用CI和Badges的加密货币平均市值略高，但这种关联在多元回归模型中并不显著。这表明，它们可能与受欢迎度等其他因素重合，而非独立的驱动因素。
+
+结论： 只有受欢迎度（尤其是Stars）能解释市值的长期差异，而开发活动和质量保证实践本身并不直接关联更高的市值。
+
+2. 关于RQ2：动态因果关系
+
+没有令人信服的证据： 通过格兰杰因果检验，研究者发现几乎没有证据表明软件指标的变化能够预测未来市值的变化，反之亦然。
+
+结果非常微弱： 在数百个项目的测试中，仅有极少数（例如，仅9个项目显示Stars能格兰杰引起市值变化）显示出统计显著性，且这些个案经检查后多被认为是偶然的同步波动，而非真正的因果关系。
+
+结论： 软件指标的日常波动与市值的日常波动之间不存在可靠的动态领先或预测关系。
+
+## 主要结论与启示
+
+“表象”重于“实质”： 对于加密货币而言，在GitHub上看起来受欢迎（拥有大量Stars）比实际上的开发活跃度或代码质量更能关联其市场价值。这反映了市场情绪和社区关注度的力量。
+
+无法通过“挖矿”软件仓库来短期套利： 软件指标的日常变化并不能作为可靠的先行指标来预测价格，试图通过监控GitHub活动来快速获利的策略很可能是无效的。
+
+开源开发是“必需品”而非“增值项”： 拥有开源项目是加密货币领域的常态，但其开发活动的细微差别（至少在短期内）并非市场价格的主要驱动因素。
+
+## 研究的局限性
+
+时间范围： 仅研究了一年，可能不足以捕捉长期的因果关系。
+
+市场环境： 研究期间市场整体呈下跌趋势，这可能影响了结果。
+
+模型假设： 主要使用线性模型，而真实世界的关系可能是非线性的。
+
+## Q：
+
+中文：
+“将CI和徽章的‘存在’等同于‘质量保证’是否合理？一个项目拥有CI配置，但若其测试薄弱或构建频繁失败，这还能代表高质量吗？”
+
+English:
+“Is it valid to equate the 'presence' of CI and badges with 'quality assurance'? If a project has a CI configuration but its tests are weak or builds frequently fail, does it still represent high quality?”
